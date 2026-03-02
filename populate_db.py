@@ -80,8 +80,11 @@ def load_stats():
                         # treat decimals as float, else int
                         cast = float(val) if '.' in val else int(val)
                     except ValueError:
-                        cast = None
-                    setattr(stats, field, cast)
+                        cast = 0  # replace invalid values with 0
+                else:
+                    # replace empty/null values with 0
+                    cast = 0.0 if field in ('COMP_PER', 'YDS_ATT', 'TD_Per', 'INT_Per', 'RATE') else 0
+                setattr(stats, field, cast)
             sess.add(stats)
         sess.commit()
     print('stats table populated from browns_stats_detailed.csv')
